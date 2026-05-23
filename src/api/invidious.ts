@@ -2,7 +2,7 @@
 import axios, { AxiosError } from 'axios'
 
 const instances = [
-  'https://uow-bakend12.vercel.app'
+  'https://script.google.com/macros/s/AKfycbxi9iAARiDYyZPoTqy-1p3h-e7W1x7Ct1epdCtmga8UHLptrnz_77adiqbVCcLnKYLG/exec'
 ]
 
 async function request(path: string) {
@@ -12,8 +12,23 @@ async function request(path: string) {
 
   for (const instance of instances) {
     try {
+      // GASの仕様に合わせてパスとクエリパラメータを?path=形式に集約・変換
+      const targetUrl = new URL(instance)
+      const isSubQuery = cleanPath.includes('?')
+      
+      if (isSubQuery) {
+        const [apiPath, searchParams] = cleanPath.split('?')
+        targetUrl.searchParams.set('path', apiPath)
+        const params = new URLSearchParams(searchParams)
+        params.forEach((value, key) => {
+          targetUrl.searchParams.set(key, value)
+        })
+      } else {
+        targetUrl.searchParams.set('path', cleanPath)
+      }
+
       const res = await axios.get(
-        `${instance}${cleanPath}`,
+        targetUrl.toString(),
         {
           timeout: 5000
         }
