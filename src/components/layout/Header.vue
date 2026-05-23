@@ -34,7 +34,7 @@ function search() {
       <!-- YouTube ロゴ（Base64の画像データを使用） -->
       <a href="/" class="flex items-center cursor-pointer" style="height: 20px;">
         <img 
-          :src="'data:image/svg+xml;base64,' + youtubeLogoBase64.replace(/(\r\n|\n|\r)/gm, '')" 
+          :src="'data:image/svg+xml;base64,' + youtubeLogoBase64.replace(/\s/g, '')" 
           alt="YouTube Logo" 
           class="h-full object-contain"
         />
@@ -79,12 +79,8 @@ function search() {
       </button>
     </div>
 
-    <!-- 右側：各種アクションとユーザーアイコン -->
+    <!-- 右側：各種アクション（作成ボタンとユーザーアイコンを削除） -->
     <div class="flex items-center gap-2">
-      <!-- 作成ボタン（動画投稿） -->
-      <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-800 transition-colors" title="作成">
-        <span class="material-symbols-outlined text-[24px]">video_call</span>
-      </button>
       
       <!-- 通知ボタン -->
       <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-800 relative transition-colors" title="通知">
@@ -95,14 +91,6 @@ function search() {
         </span>
       </button>
       
-      <!-- ユーザーアバター -->
-      <button class="w-10 h-10 flex items-center justify-center rounded-full ml-2 overflow-hidden focus:outline-none">
-        <img 
-          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
-          alt="User avatar" 
-          class="w-8 h-8 rounded-full object-cover"
-        />
-      </button>
     </div>
 
   </header>
