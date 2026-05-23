@@ -1,15 +1,7 @@
 import axios from 'axios'
 
 const instances = [
-  'https://inv.nadeko.net/',
-  'https://invidious.f5.si/',
-  'https://invidious.ritoge.com/',
-  'https://invidious.ducks.party/',
-  'https://super8.absturztau.be/',
-  'https://invidious.darkness.services/',
-  'https://yt.omada.cafe/',
-  'https://iv.melmac.space/',
-  'https://iv.duti.dev/',
+  'https://uow-bakend12.vercel.app/'
 ]
 
 async function request(path: string) {
