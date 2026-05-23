@@ -31,12 +31,25 @@ async function loadVideo() {
     video.value = await getVideo(id)
 
     const commentsData = await getComments(id)
-    comments.value = commentsData.comments || []
+
+    comments.value =
+      commentsData.comments?.map((comment: any) => ({
+        ...comment,
+        authorThumbnail:
+          comment.authorThumbnails?.[1]?.url ||
+          comment.authorThumbnails?.[0]?.url ||
+          `https://yt3.ggpht.com/ytc/default-user=s88-c-k-c0x00ffffff-no-rj`
+      })) || []
 
     const related = await searchVideos(video.value.title)
+
     relatedVideos.value = related
       .filter((v: any) => v.videoId !== id)
       .slice(0, 20)
+      .map((v: any) => ({
+        ...v,
+        thumbnail: `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
+      }))
   } finally {
     loading.value = false
   }
@@ -70,6 +83,7 @@ watch(
           <VideoPlayer
             :id="video?.videoId"
             :stream="selectedStream"
+            :format-streams="video?.formatStreams"
           />
 
           <!-- STREAM SELECT -->
@@ -88,6 +102,10 @@ watch(
 
               <option value="youtube">
                 youtube.com
+              </option>
+
+              <option value="stream">
+                Invidious Stream
               </option>
             </select>
           </div>
@@ -181,7 +199,7 @@ watch(
             >
 
               <img
-                :src="comment.authorThumbnails?.[1]?.url"
+                :src="comment.authorThumbnail"
                 class="w-10 h-10 rounded-full object-cover"
               >
 
@@ -235,7 +253,7 @@ watch(
             >
 
               <img
-                :src="related.videoThumbnails?.[3]?.url"
+                :src="related.thumbnail"
                 class="w-44 aspect-video object-cover rounded-xl"
               >
 
