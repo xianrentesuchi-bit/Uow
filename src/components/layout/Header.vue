@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-// 指定のパスからBase64文字列（プレーンテキスト）をインポート
-import youtubeLogoBase64 from '@/components/img/youtubelogo.txt?raw'
+// 相対パスに修正して確実にViteがファイルを解決できるように変更
+import youtubeLogoBase64 from '../img/youtubelogo.txt?raw'
 
 const query = ref('')
 const router = useRouter()
