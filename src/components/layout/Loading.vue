@@ -4,27 +4,34 @@ import Sidebar from './Sidebar.vue'
 </script>
 
 <template>
-  <Header />
+  <div class="layout-container">
+    <Header />
+    <Sidebar />
 
-  <Sidebar />
+    <main class="main-content">
+      <div class="fixed inset-0 z-[9999] bg-[#f9f9f9] flex items-center justify-center">
+        <div class="flex flex-col items-center">
+          <div class="text-xl font-semibold text-zinc-900">
+            動画読み込み中...
+          </div>
 
-  <div class="pt-14 pl-60">
-    <div class="fixed inset-0 z-[9999] bg-[#f9f9f9] flex items-center justify-center">
-      <div class="flex flex-col items-center">
-
-        <div
-          class="w-16 h-16 border-4 border-zinc-200 border-t-red-500 rounded-full"
-        ></div>
-
-        <div class="mt-6 text-xl font-semibold text-zinc-900">
-          動画読み込み中...
+          <div class="mt-2 text-zinc-500">
+            動画検索やデータ取得をしています
+          </div>
         </div>
-
-        <div class="mt-2 text-zinc-500">
-          動画検索やデータ取得をしています
-        </div>
-
       </div>
-    </div>
+    </main>
   </div>
 </template>
+
+<style scoped>
+.layout-container {
+  --sidebar-width: 240px;
+}
+
+.main-content {
+  padding-top: 4rem;
+  padding-left: var(--sidebar-width);
+  transition: padding-left 0.3s ease;
+}
+</style>
