@@ -1,11 +1,12 @@
 <!-- pages/Watch.vue -->
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import Layout from '../components/layout/Layout.vue'
 import VideoPlayer from '../components/video/VideoPlayer.vue'
 import Loading from '../components/layout/Loading.vue'
+import Download from '../components/layout/Download.vue'
 
 import {
   getComments,
@@ -21,6 +22,15 @@ const relatedVideos = ref<any[]>([])
 const loading = ref(true)
 
 const selectedStream = ref('youtube-nocookie')
+
+const downloadModal = ref(false)
+
+const downloadFormats = computed(() => {
+  return [
+    ...(video.value?.formatStreams || []),
+    ...(video.value?.adaptiveFormats || [])
+  ]
+})
 
 async function loadVideo() {
   loading.value = true
@@ -166,6 +176,13 @@ watch(
                 Share
               </button>
 
+              <button
+                class="bg-black text-white hover:bg-zinc-800 transition px-5 h-10 rounded-full font-semibold"
+                @click="downloadModal = true"
+              >
+                Download
+              </button>
+
             </div>
           </div>
 
@@ -292,6 +309,12 @@ watch(
         </div>
 
       </div>
+
+      <Download
+        :open="downloadModal"
+        :formats="downloadFormats"
+        @close="downloadModal = false"
+      />
     </div>
   </Layout>
 </template>
