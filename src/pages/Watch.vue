@@ -65,9 +65,9 @@ function toggleSubscribe() {
       authorId: video.value.authorId,
       author: video.value.author,
       authorThumbnail:
-        video.value.authorThumbnails?.?.url ||
-        video.value.authorThumbnails?.?.url ||
-        video.value.authorThumbnails?.?.url ||
+        video.value.authorThumbnails?.[2]?.url ||
+        video.value.authorThumbnails?.[1]?.url ||
+        video.value.authorThumbnails?.[0]?.url ||
         '',
       subCountText: video.value.subCountText || ''
     })
@@ -119,8 +119,8 @@ async function loadVideo() {
       commentsData.comments?.map((comment: any) => ({
         ...comment,
         authorThumbnail:
-          comment.authorThumbnails?.?.url ||
-          comment.authorThumbnails?.?.url ||
+          comment.authorThumbnails?.[1]?.url ||
+          comment.authorThumbnails?.[0]?.url ||
           `https://yt3.ggpht.com/ytc/default-user=s88-c-k-c0x00ffffff-no-rj`
       })) || []
 
@@ -154,31 +154,31 @@ watch(
 
     <div
       v-else
-      class="bg-white text-neutral-900 min-h-screen font-sans antialiased"
+      class="bg-white text-black min-h-screen"
     >
       <div
-        class="pt-6 px-6 max-w-[1754px] mx-auto grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-x-6 gap-y-8"
+        class="p-6 max-w-[1700px] mx-auto grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-8"
       >
 
-        <div class="min-w-0">
+        <!-- LEFT -->
+        <div>
 
-          <div class="w-full aspect-video rounded-xl overflow-hidden bg-black shadow-sm">
-            <VideoPlayer
-              :key="`${selectedStream}-${video?.videoId}`"
-              :id="video?.videoId"
-              :stream="selectedStream"
-              :format-streams="video?.formatStreams"
-            />
-          </div>
+          <VideoPlayer
+            :key="`${selectedStream}-${video?.videoId}`"
+            :id="video?.videoId"
+            :stream="selectedStream"
+            :format-streams="video?.formatStreams"
+          />
 
-          <div class="mt-3 flex items-center gap-3 bg-neutral-50 p-2 rounded-xl border border-neutral-100">
-            <div class="font-medium text-xs text-neutral-500 pl-2">
-              ソース切替:
+          <!-- STREAM SELECT -->
+          <div class="mt-4 flex items-center gap-3">
+            <div class="font-semibold text-sm text-zinc-600">
+              プレイヤー
             </div>
 
             <select
               v-model="selectedStream"
-              class="border border-neutral-300 rounded-lg px-3 h-8 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-neutral-400 cursor-pointer text-neutral-700"
+              class="border border-zinc-300 rounded-xl px-4 h-10 bg-white"
             >
               <option value="youtube-nocookie">
                 youtube-nocookie.com
@@ -194,52 +194,44 @@ watch(
             </select>
           </div>
 
-          <h1 class="text-xl font-bold mt-3 tracking-tight text-neutral-900 leading-7 lg:text-2xl">
+          <!-- TITLE -->
+          <h1 class="text-2xl font-bold mt-4 leading-tight">
             {{ video?.title }}
           </h1>
 
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-3 pb-4 border-b border-neutral-100 gap-4">
+          <!-- ACTION BAR -->
+          <div class="flex items-center justify-between mt-5 flex-wrap gap-4">
 
-            <div class="flex items-center gap-3">
-              <RouterLink
-                :to="`/channel/${video?.authorId}`"
-                class="flex items-center gap-3 shrink-0 group"
+            <!-- CHANNEL -->
+            <RouterLink
+              :to="`/channel/${video?.authorId}`"
+              class="flex items-center gap-4"
+            >
+
+              <img
+                :src="video?.authorThumbnails?.[2]?.url"
+                class="w-11 h-11 rounded-full object-cover"
               >
-                <img
-                  :src="video?.authorThumbnails?.?.url"
-                  class="w-10 h-10 rounded-full object-cover border border-neutral-100"
-                >
 
-                <div class="flex flex-col min-w-0">
-                  <div class="font-bold text-[15px] text-neutral-900 group-hover:text-neutral-700 truncate leading-5">
-                    {{ video?.author }}
-                  </div>
-
-                  <div class="text-xs text-neutral-500 truncate mt-0.5">
-                    {{ video?.subCountText || 'YouTube Channel' }}
-                  </div>
+              <div>
+                <div class="font-semibold text-[15px]">
+                  {{ video?.author }}
                 </div>
-              </RouterLink>
+
+                <div class="text-sm text-zinc-500">
+                  {{ video?.subCountText || 'YouTube Channel' }}
+                </div>
+              </div>
+
+            </RouterLink>
+
+            <!-- BUTTONS -->
+            <div class="flex items-center gap-2 flex-wrap">
 
               <button
-                :class="
-                  subscribed
-                    ? 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
-                    : 'bg-neutral-900 text-white hover:bg-neutral-800'
-                "
-                class="transition px-4 h-9 rounded-full font-medium text-sm ml-3 shrink-0"
-                @click="toggleSubscribe"
+                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold flex items-center gap-2"
               >
-                {{ subscribed ? '登録済み' : 'チャンネル登録' }}
-              </button>
-            </div>
-
-            <div class="flex items-center gap-2 flex-wrap sm:justify-end">
-
-              <button
-                class="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 transition px-4 h-9 rounded-full font-medium text-sm flex items-center gap-2"
-              >
-                <span class="text-base leading-none">👍</span>
+                👍
                 <span>
                   {{
                     video?.likeCount
@@ -250,89 +242,97 @@ watch(
               </button>
 
               <button
-                class="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 transition px-4 h-9 rounded-full font-medium text-sm flex items-center gap-1.5"
+                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold"
                 @click="shareVideo"
               >
-                <span class="text-base leading-none">↗</span>
-                <span>共有</span>
+                共有
               </button>
 
               <button
-                class="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 transition px-4 h-9 rounded-full font-medium text-sm flex items-center gap-1.5"
+                :class="
+                  subscribed
+                    ? 'bg-zinc-200 text-black hover:bg-zinc-300'
+                    : 'bg-black text-white hover:bg-zinc-800'
+                "
+                class="transition px-5 h-10 rounded-full font-semibold"
+                @click="toggleSubscribe"
+              >
+                {{ subscribed ? '登録済み' : '登録' }}
+              </button>
+
+              <button
+                class="bg-black text-white hover:bg-zinc-800 transition px-5 h-10 rounded-full font-semibold"
                 @click="downloadModal = true"
               >
-                <span class="text-base leading-none">↓</span>
-                <span>オフライン</span>
+                ダウンロード
               </button>
 
             </div>
           </div>
 
+          <!-- STATS -->
           <div
-            class="bg-neutral-100 hover:bg-neutral-150 transition-colors duration-200 rounded-xl p-3 mt-4 text-sm"
+            class="bg-zinc-100 rounded-2xl p-4 mt-6"
           >
-            <div class="font-bold text-neutral-900">
+            <div class="font-semibold text-sm">
               {{
                 Intl.NumberFormat().format(video?.viewCount || 0)
               }}
               回視聴
             </div>
 
-            <div class="mt-2 whitespace-pre-wrap text-neutral-800 leading-relaxed font-normal">
+            <div class="mt-3 whitespace-pre-wrap text-[15px] leading-7">
               {{ video?.description }}
             </div>
           </div>
 
-          <div class="mt-6">
+          <!-- COMMENTS -->
+          <div class="mt-8">
 
-            <h2 class="text-lg font-bold mb-6 text-neutral-900 flex items-center gap-2">
-              <span>コメント</span>
-              <span class="text-neutral-500 font-normal text-sm">
-                {{ comments.length }} 件
-              </span>
+            <h2 class="text-xl font-bold mb-6">
+              コメント
+              ({{ comments.length }})
             </h2>
 
             <div
               v-for="comment in comments"
               :key="comment.commentId"
-              class="flex gap-4 mb-6 text-sm"
+              class="flex gap-4 mb-8"
             >
 
               <img
                 :src="comment.authorThumbnail"
-                class="w-10 h-10 rounded-full object-cover shrink-0"
+                class="w-10 h-10 rounded-full object-cover"
               >
 
-              <div class="flex-1 min-w-0">
+              <div class="flex-1">
 
-                <div class="flex items-baseline gap-2 flex-wrap">
-                  <div class="font-bold text-[13px] text-neutral-900 truncate">
+                <div class="flex items-center gap-2">
+                  <div class="font-semibold text-sm">
                     {{ comment.author }}
                   </div>
 
-                  <div class="text-xs text-neutral-500">
+                  <div class="text-xs text-zinc-500">
                     {{ comment.publishedText }}
                   </div>
                 </div>
 
-                <div class="mt-1 text-[14px] text-neutral-900 whitespace-pre-wrap leading-5">
+                <div class="mt-2 text-[15px] text-zinc-700 whitespace-pre-wrap leading-7">
                   {{ comment.content }}
                 </div>
 
-                <div class="mt-2 text-xs text-neutral-500 flex items-center gap-4">
+                <div class="mt-3 text-sm text-zinc-500 flex items-center gap-4">
 
-                  <div class="flex items-center gap-1 hover:text-neutral-700 cursor-pointer p-1 -m-1 rounded">
-                    <span>👍</span>
-                    <span>
-                      {{
-                        comment.likeCount
-                          ? Intl.NumberFormat().format(comment.likeCount)
-                          : 0
-                      }}
-                    </span>
+                  <div class="flex items-center gap-1">
+                    👍
+                    {{
+                      comment.likeCount
+                        ? Intl.NumberFormat().format(comment.likeCount)
+                        : 0
+                    }}
                   </div>
 
-                  <button class="hover:bg-neutral-100 px-2 py-1 rounded-full font-medium text-neutral-900 transition">
+                  <button class="hover:text-black">
                     返信
                   </button>
 
@@ -342,48 +342,46 @@ watch(
           </div>
         </div>
 
-        <div class="w-full">
+        <!-- RIGHT -->
+        <div>
 
-          <div class="space-y-3">
+          <div class="space-y-4">
 
             <RouterLink
               v-for="related in relatedVideos"
               :key="related.videoId"
               :to="`/watch/${related.videoId}`"
-              class="flex gap-2 group cursor-pointer"
+              class="flex gap-3 group"
             >
 
-              <div class="w-40 sm:w-41 aspect-video object-cover rounded-lg overflow-hidden bg-neutral-100 shrink-0 relative">
-                <img
-                  :src="related.thumbnail"
-                  class="w-full h-full object-cover group-hover:scale-[1.02] transition duration-200"
-                >
-              </div>
+              <img
+                :src="related.thumbnail"
+                class="w-44 aspect-video object-cover rounded-xl"
+              >
 
-              <div class="flex-1 min-w-0 pr-1">
+              <div class="flex-1 min-w-0">
 
                 <div
-                  class="font-bold text-[14px] text-neutral-900 leading-5 line-clamp-2 group-hover:text-neutral-800 tracking-tight"
+                  class="font-semibold text-[15px] leading-5 line-clamp-2 group-hover:text-zinc-700"
                 >
                   {{ related.title }}
                 </div>
 
-                <div class="text-[12px] text-neutral-600 mt-1 truncate hover:text-neutral-900 transition-colors">
+                <div class="text-sm text-zinc-500 mt-2">
                   {{ related.author }}
                 </div>
 
-                <div class="text-[12px] text-neutral-500 mt-0.5 flex flex-wrap items-center gap-x-1.5 leading-none">
-                  <span>
-                    {{
-                      Intl.NumberFormat().format(
-                        related.viewCount || 0
-                      )
-                    }}
-                    回視聴
-                  </span>
-                  <span class="before:content-['•'] before:mr-1.5">
-                    {{ related.publishedText }}
-                  </span>
+                <div class="text-sm text-zinc-500 mt-1">
+                  {{
+                    Intl.NumberFormat().format(
+                      related.viewCount || 0
+                    )
+                  }}
+                  回視聴
+                </div>
+
+                <div class="text-sm text-zinc-500 mt-1">
+                  {{ related.publishedText }}
                 </div>
 
               </div>
