@@ -42,10 +42,10 @@ onMounted(async () => {
 
     <div
       v-else
-      class="max-w-[1600px] mx-auto"
+      class="max-w-[1600px] mx-auto bg-white min-h-screen"
     >
 
-      <div class="relative h-[240px] bg-zinc-800">
+      <div class="relative h-[240px] bg-gray-200">
         <img
           v-if="channel?.authorBanners?.[0]?.url"
           :src="channel.authorBanners[0].url"
@@ -59,29 +59,29 @@ onMounted(async () => {
 
           <img
             :src="channel?.authorThumbnails?.[0]?.url"
-            class="w-40 h-40 rounded-full object-cover"
+            class="w-40 h-40 rounded-full object-cover border-4 border-white -mt-20 shadow-md"
           />
 
           <div class="flex-1">
 
-            <h1 class="text-4xl font-bold">
+            <h1 class="text-4xl font-bold text-black">
               {{ channel?.author }}
             </h1>
 
-            <div class="text-zinc-400 mt-3">
+            <div class="text-gray-500 mt-3">
               @{{ channel?.author }}
             </div>
 
-            <div class="text-zinc-400 mt-1">
+            <div class="text-gray-500 mt-1">
               {{ channel?.subCount }} subscribers
             </div>
 
-            <div class="mt-4 text-zinc-300 whitespace-pre-wrap">
+            <div class="mt-4 text-gray-700 whitespace-pre-wrap">
               {{ channel?.description }}
             </div>
 
             <button
-              class="mt-6 bg-white text-black px-6 h-10 rounded-full font-semibold"
+              class="mt-6 bg-black text-white px-6 h-10 rounded-full font-semibold hover:bg-gray-800 transition-colors"
             >
               Subscribe
             </button>
