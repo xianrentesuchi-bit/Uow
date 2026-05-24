@@ -28,6 +28,8 @@ const subscribed = ref(false)
 
 const expandedDescription = ref(false)
 
+const playlists = ref<any[]>([])
+
 const downloadFormats = computed(() => {
   return [
     ...(video.value?.formatStreams || []),
@@ -42,6 +44,51 @@ const shortDescription = computed(() => {
     ? video.value.description
     : video.value.description.slice(0, 220)
 })
+
+function loadPlaylists() {
+  playlists.value = JSON.parse(
+    localStorage.getItem('playlists') || '[]'
+  )
+}
+
+function addToPlaylist(playlistId: string) {
+  if (!video.value) return
+
+  const playlistsData = JSON.parse(
+    localStorage.getItem('playlists') || '[]'
+  )
+
+  const playlist = playlistsData.find(
+    (p: any) => p.id === playlistId
+  )
+
+  if (!playlist) return
+
+  const exists = playlist.videos.find(
+    (v: any) => v.videoId === video.value.videoId
+  )
+
+  if (exists) {
+    alert('すでに追加されています')
+    return
+  }
+
+  playlist.videos.unshift({
+    videoId: video.value.videoId,
+    title: video.value.title,
+    thumbnail: `https://i.ytimg.com/vi/${video.value.videoId}/hqdefault.jpg`,
+    author: video.value.author
+  })
+
+  localStorage.setItem(
+    'playlists',
+    JSON.stringify(playlistsData)
+  )
+
+  loadPlaylists()
+
+  alert('プレイリストに追加しました')
+}
 
 function checkSubscribed() {
   if (!video.value) return
@@ -120,34 +167,37 @@ async function loadVideo() {
     const id = route.params.id as string
 
     video.value = await getVideo(id)
+
     const history = JSON.parse(
-  localStorage.getItem('watch-history') || '[]'
-)
+      localStorage.getItem('watch-history') || '[]'
+    )
 
-const newVideo = {
-  videoId: video.value.videoId,
-  title: video.value.title,
-  thumbnail: `https://i.ytimg.com/vi/${video.value.videoId}/hqdefault.jpg`
-}
+    const newVideo = {
+      videoId: video.value.videoId,
+      title: video.value.title,
+      thumbnail: `https://i.ytimg.com/vi/${video.value.videoId}/hqdefault.jpg`
+    }
 
-const exists = history.findIndex(
-  (v: any) => v.videoId === video.value.videoId
-)
+    const exists = history.findIndex(
+      (v: any) => v.videoId === video.value.videoId
+    )
 
-if (exists !== -1) {
-  history.splice(exists, 1)
-}
+    if (exists !== -1) {
+      history.splice(exists, 1)
+    }
 
-history.unshift(newVideo)
+    history.unshift(newVideo)
 
-localStorage.setItem(
-  'watch-history',
-  JSON.stringify(history.slice(0, 100))
-)
+    localStorage.setItem(
+      'watch-history',
+      JSON.stringify(history.slice(0, 100))
+    )
 
     expandedDescription.value = false
 
     checkSubscribed()
+
+    loadPlaylists()
 
     const commentsData = await getComments(id)
 
@@ -294,6 +344,27 @@ watch(
                 @click="toggleSubscribe"
               >
                 {{ subscribed ? '登録済み' : '登録' }}
+              </button>
+
+              <button
+                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold"
+              >
+                <select
+                  class="bg-transparent outline-none"
+                  @change="addToPlaylist(($event.target as HTMLSelectElement).value)"
+                >
+                  <option value="">
+                    プレイリストに追加
+                  </option>
+
+                  <option
+                    v-for="playlist in playlists"
+                    :key="playlist.id"
+                    :value="playlist.id"
+                  >
+                    {{ playlist.name }}
+                  </option>
+                </select>
               </button>
 
               <button
