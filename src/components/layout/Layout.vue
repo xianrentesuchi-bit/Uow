@@ -17,6 +17,7 @@ import Sidebar from './Sidebar.vue'
 <style scoped>
 .layout-container {
   --sidebar-width: 240px;
+  --gap-size: 20px;
   display: flex;
   min-height: 100vh;
 }
@@ -24,6 +25,7 @@ import Sidebar from './Sidebar.vue'
 .main-content {
   flex: 1;
   padding-top: 4rem;
-  width: calc(100% - var(--sidebar-width));
+  padding-left: var(--gap-size);
+  width: calc(100% - var(--sidebar-width) - var(--gap-size));
 }
 </style>
