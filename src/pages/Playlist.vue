@@ -49,50 +49,55 @@ onMounted(() => {
 
 <template>
   <Layout>
-    <div class="bg-white text-[#0f0f0f] min-h-screen antialiased">
 
-      <!-- material icons -->
-      <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-        rel="stylesheet"
-      >
+    <!-- fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    >
 
-      <div class="max-w-[1700px] mx-auto px-6 py-8">
+    <div
+      class="bg-white text-[#0f0f0f] min-h-screen antialiased"
+      style="font-family: Roboto, Arial, sans-serif;"
+    >
+
+      <div class="max-w-[1800px] mx-auto px-6 py-8">
 
         <!-- header -->
         <div class="flex items-center justify-between mb-10">
 
           <div>
+
             <h1
-              class="text-[36px] font-bold tracking-[-1px] text-[#0f0f0f]"
-              style="font-family: Roboto, Arial, sans-serif;"
+              class="text-[36px] font-bold tracking-[-1px] leading-none"
             >
               プレイリスト
             </h1>
 
             <div
-              class="text-[#606060] mt-1 text-[14px]"
-              style="font-family: Roboto, Arial, sans-serif;"
+              class="text-[#606060] mt-2 text-[14px] font-normal"
             >
               保存したプレイリスト
             </div>
+
           </div>
 
           <button
-            class="h-10 px-5 rounded-full border border-[#d3d3d3] bg-white hover:bg-[#f2f2f2] text-[#0f0f0f] text-[14px] font-medium transition duration-150 flex items-center gap-2"
-            style="font-family: Roboto, Arial, sans-serif;"
+            class="h-10 px-4 rounded-full border border-[#d3d3d3] bg-white hover:bg-[#f2f2f2] active:bg-[#e5e5e5] transition-all duration-150 flex items-center gap-2 text-[14px] font-medium"
             @click="createPlaylist"
           >
+
             <span class="material-symbols-outlined text-[22px]">
               add
             </span>
 
             新しいプレイリスト
+
           </button>
 
         </div>
 
-        <!-- playlist exists -->
+        <!-- playlists -->
         <div
           v-if="playlists.length"
           class="space-y-14"
@@ -104,42 +109,45 @@ onMounted(() => {
           >
 
             <!-- playlist header -->
-            <div class="flex items-center justify-between mb-6">
+            <div
+              class="flex items-center justify-between mb-6"
+            >
 
               <div>
+
                 <div
-                  class="text-[26px] font-bold text-[#0f0f0f] hover:text-black cursor-pointer transition"
-                  style="font-family: Roboto, Arial, sans-serif;"
+                  class="text-[28px] font-bold tracking-[-0.5px] text-[#0f0f0f]"
                 >
                   {{ playlist.name }}
                 </div>
 
                 <div
                   class="text-[14px] text-[#606060] mt-1"
-                  style="font-family: Roboto, Arial, sans-serif;"
                 >
                   {{ playlist.videos.length }} 本の動画
                 </div>
+
               </div>
 
               <button
-                class="h-9 px-4 rounded-full hover:bg-[#f2f2f2] text-[#0f0f0f] text-[14px] font-medium flex items-center gap-2 transition"
-                style="font-family: Roboto, Arial, sans-serif;"
+                class="h-10 px-4 rounded-full hover:bg-[#f2f2f2] transition-all duration-150 flex items-center gap-2 text-[14px] font-medium text-[#0f0f0f]"
                 @click="deletePlaylist(playlist.id)"
               >
+
                 <span class="material-symbols-outlined text-[20px]">
                   delete
                 </span>
 
                 削除
+
               </button>
 
             </div>
 
-            <!-- videos -->
+            <!-- videos grid -->
             <div
               v-if="playlist.videos.length"
-              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-10"
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-8"
             >
 
               <RouterLink
@@ -151,19 +159,58 @@ onMounted(() => {
 
                 <!-- thumbnail -->
                 <div
-                  class="relative w-full aspect-video overflow-hidden rounded-xl bg-[#f2f2f2]"
+                  class="relative aspect-video overflow-hidden rounded-xl bg-[#f2f2f2]"
                 >
 
                   <img
                     :src="video.thumbnail"
-                    class="w-full h-full object-cover group-hover:scale-[1.02] transition duration-200"
+                    class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
                   >
+
+                  <!-- playlist overlay -->
+                  <div
+                    class="absolute top-0 right-0 w-[40%] h-full bg-black/75 flex flex-col items-center justify-center text-white transition-all duration-150 group-hover:bg-black/90"
+                  >
+
+                    <span
+                      class="text-[18px] font-medium leading-none"
+                    >
+                      {{ playlist.videos.length }}
+                    </span>
+
+                    <span
+                      class="material-symbols-outlined text-[22px] mt-1"
+                    >
+                      playlist_play
+                    </span>
+
+                  </div>
+
+                  <!-- hover layer -->
+                  <div
+                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center"
+                  >
+
+                    <div
+                      class="flex items-center gap-2 text-white text-[14px] font-medium"
+                    >
+
+                      <span class="material-symbols-outlined text-[20px]">
+                        play_arrow
+                      </span>
+
+                      すべて表示
+
+                    </div>
+
+                  </div>
 
                 </div>
 
                 <!-- meta -->
                 <div class="flex gap-3 mt-3">
 
+                  <!-- fake avatar -->
                   <div
                     class="w-9 h-9 rounded-full bg-[#e5e5e5] flex-shrink-0"
                   />
@@ -171,15 +218,13 @@ onMounted(() => {
                   <div class="flex flex-col min-w-0">
 
                     <div
-                      class="text-[16px] font-medium leading-[22px] line-clamp-2 text-[#0f0f0f]"
-                      style="font-family: Roboto, Arial, sans-serif;"
+                      class="text-[15px] font-medium leading-[22px] line-clamp-2 text-[#0f0f0f]"
                     >
                       {{ video.title }}
                     </div>
 
                     <div
-                      class="text-[14px] text-[#606060] mt-1 truncate hover:text-[#0f0f0f]"
-                      style="font-family: Roboto, Arial, sans-serif;"
+                      class="text-[14px] text-[#606060] mt-1 truncate hover:text-[#0f0f0f] transition-colors"
                     >
                       {{ video.author }}
                     </div>
@@ -192,28 +237,32 @@ onMounted(() => {
 
             </div>
 
-            <!-- empty videos -->
+            <!-- empty playlist -->
             <div
               v-else
-              class="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] py-14 flex flex-col items-center justify-center"
+              class="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] py-16 flex flex-col items-center justify-center"
             >
 
-              <span
-                class="material-symbols-outlined text-[64px] text-[#909090]"
+              <div
+                class="w-20 h-20 rounded-full bg-[#f1f1f1] flex items-center justify-center"
               >
-                playlist_play
-              </span>
+
+                <span
+                  class="material-symbols-outlined text-[42px] text-[#909090]"
+                >
+                  playlist_play
+                </span>
+
+              </div>
 
               <div
                 class="mt-5 text-[20px] font-medium text-[#0f0f0f]"
-                style="font-family: Roboto, Arial, sans-serif;"
               >
                 動画がありません
               </div>
 
               <div
                 class="text-[#606060] text-[14px] mt-2"
-                style="font-family: Roboto, Arial, sans-serif;"
               >
                 このプレイリストにはまだ動画が保存されていません
               </div>
@@ -231,11 +280,11 @@ onMounted(() => {
         >
 
           <div
-            class="w-28 h-28 rounded-full bg-[#f2f2f2] flex items-center justify-center"
+            class="w-32 h-32 rounded-full bg-[#f2f2f2] flex items-center justify-center"
           >
 
             <span
-              class="material-symbols-outlined text-[52px] text-[#606060]"
+              class="material-symbols-outlined text-[56px] text-[#606060]"
             >
               video_library
             </span>
@@ -243,23 +292,20 @@ onMounted(() => {
           </div>
 
           <div
-            class="mt-8 text-[28px] font-bold text-[#0f0f0f]"
-            style="font-family: Roboto, Arial, sans-serif;"
+            class="mt-8 text-[30px] font-bold tracking-[-0.5px]"
           >
             プレイリストがありません
           </div>
 
           <div
-            class="text-[#606060] mt-3 text-center max-w-md text-[15px] leading-[24px]"
-            style="font-family: Roboto, Arial, sans-serif;"
+            class="text-[#606060] mt-3 text-center text-[15px] leading-[24px]"
           >
             お気に入りの動画を保存して<br>
             YouTube のようにプレイリストを整理できます
           </div>
 
           <button
-            class="mt-8 h-10 px-5 rounded-full bg-[#0f0f0f] hover:bg-black text-white text-[14px] font-medium transition duration-150 flex items-center gap-2"
-            style="font-family: Roboto, Arial, sans-serif;"
+            class="mt-8 h-10 px-5 rounded-full bg-[#0f0f0f] hover:bg-black active:bg-[#202020] transition-all duration-150 text-white text-[14px] font-medium flex items-center gap-2"
             @click="createPlaylist"
           >
 
@@ -276,5 +322,6 @@ onMounted(() => {
       </div>
 
     </div>
+
   </Layout>
 </template>
