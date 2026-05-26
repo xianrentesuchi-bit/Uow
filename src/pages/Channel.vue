@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
@@ -23,6 +23,29 @@ const channel = ref<any>(null)
 const videos = ref<any[]>([])
 
 const activeTab = ref('videos')
+
+const showFullDescription = ref(false)
+
+const DESCRIPTION_LIMIT = 220
+
+const displayDescription = computed(() => {
+  const text = channel.value?.description || ''
+
+  if (
+    showFullDescription.value ||
+    text.length <= DESCRIPTION_LIMIT
+  ) {
+    return text
+  }
+
+  return text.slice(0, DESCRIPTION_LIMIT) + '...'
+})
+
+const shouldShowToggle = computed(() => {
+  const text = channel.value?.description || ''
+
+  return text.length > DESCRIPTION_LIMIT
+})
 
 onMounted(async () => {
   try {
@@ -121,8 +144,20 @@ onMounted(async () => {
             </div>
 
             <div class="mt-4 text-gray-700 whitespace-pre-wrap">
-              {{ channel?.description || '' }}
+              {{ displayDescription }}
             </div>
+
+            <button
+              v-if="shouldShowToggle"
+              @click="showFullDescription = !showFullDescription"
+              class="mt-3 text-sm font-semibold text-black hover:underline"
+            >
+              {{
+                showFullDescription
+                  ? '一部表示'
+                  : '全体を表示'
+              }}
+            </button>
 
             <button
               class="mt-6 bg-black text-white px-6 h-10 rounded-full font-semibold hover:bg-gray-800 transition-colors"
