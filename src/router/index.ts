@@ -61,7 +61,7 @@ const router = createRouter({
     },
 
     {
-      path: '/read/:id',
+      path: '/read',
       component: Read,
     },
   ],
