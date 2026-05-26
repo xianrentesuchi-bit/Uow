@@ -51,11 +51,11 @@ const router = createRouter({
     {
       path: '/playlist',
       component: Playlist,
-　　 },
+    },
     {
       path: '/tools',
       component: html,
-　　 },
+    },
   ],
 })
 
