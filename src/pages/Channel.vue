@@ -24,27 +24,13 @@ const videos = ref<any[]>([])
 
 const activeTab = ref('videos')
 
-const showFullDescription = ref(false)
-
-const DESCRIPTION_LIMIT = 220
-
-const displayDescription = computed(() => {
-  const text = channel.value?.description || ''
-
-  if (
-    showFullDescription.value ||
-    text.length <= DESCRIPTION_LIMIT
-  ) {
-    return text
-  }
-
-  return text.slice(0, DESCRIPTION_LIMIT) + '...'
-})
+const expandedDescription = ref(false)
 
 const shouldShowToggle = computed(() => {
-  const text = channel.value?.description || ''
-
-  return text.length > DESCRIPTION_LIMIT
+  return (
+    (channel.value?.description || '').split('\n').length > 3 ||
+    (channel.value?.description || '').length > 180
+  )
 })
 
 onMounted(async () => {
@@ -143,21 +129,30 @@ onMounted(async () => {
               {{ channel?.subCount }} subscribers
             </div>
 
-            <div class="mt-4 text-gray-700 whitespace-pre-wrap">
-              {{ displayDescription }}
-            </div>
+            <div class="mt-4">
+              <div
+                class="text-gray-700 whitespace-pre-wrap"
+                :class="
+                  !expandedDescription
+                    ? 'line-clamp-3'
+                    : ''
+                "
+              >
+                {{ channel?.description || '' }}
+              </div>
 
-            <button
-              v-if="shouldShowToggle"
-              @click="showFullDescription = !showFullDescription"
-              class="mt-3 text-sm font-semibold text-black hover:underline"
-            >
-              {{
-                showFullDescription
-                  ? '一部表示'
-                  : '全体を表示'
-              }}
-            </button>
+              <button
+                v-if="shouldShowToggle"
+                @click="expandedDescription = !expandedDescription"
+                class="mt-2 text-sm font-semibold text-black hover:underline"
+              >
+                {{
+                  expandedDescription
+                    ? '一部表示'
+                    : '全体を表示'
+                }}
+              </button>
+            </div>
 
             <button
               class="mt-6 bg-black text-white px-6 h-10 rounded-full font-semibold hover:bg-gray-800 transition-colors"
