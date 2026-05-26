@@ -72,7 +72,12 @@ onMounted(async () => {
         `https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`,
 
       authorThumbnail:
-        channel.value.avatar
+        channel.value.avatar,
+
+      viewCount:
+        video.viewCount ||
+        video.viewCountText ||
+        0
     }))
   } finally {
     loading.value = false
