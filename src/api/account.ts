@@ -1,11 +1,7 @@
 import axios from 'axios';
 
-// --- あなたのGAS（Webアプリ）のURLをここに貼り付けてください ---
-const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyUl2srbJcZxjTgVtlE0JPPOh_57TFnasLViHzvWTqSJL5YeK3TaMXCVStK8H0gctsD/exec';
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby9dBd9LcmLMjMQN-jqSJsZLEkpLtLZMAZk9xuAotD2WoScH98b6W4fpWF9EZXVElDu/exec';
 
-/**
- * APIレスポンスの共通型定義
- */
 export interface ApiResponse {
   success: boolean;
   message?: string;
@@ -13,11 +9,12 @@ export interface ApiResponse {
   userId?: string;
 }
 
-/**
- * 1. うおtube側から新規アカウントを登録する
- * @param username ユーザー名
- * @param password パスワード
- */
+export interface BackupData {
+  playlists?: any[];
+  subscribers?: any[];
+  'watch-history'?: any[];
+}
+
 export const registerUser = async (username: string, password: string): Promise<ApiResponse> => {
   const params = new URLSearchParams();
   params.append('action', 'register');
@@ -39,11 +36,6 @@ export const registerUser = async (username: string, password: string): Promise<
   }
 };
 
-/**
- * 2. うおtube側からログイン認証を行う
- * @param username ユーザー名
- * @param password パスワード
- */
 export const loginUser = async (username: string, password: string): Promise<ApiResponse> => {
   const params = new URLSearchParams();
   params.append('action', 'login');
@@ -65,11 +57,6 @@ export const loginUser = async (username: string, password: string): Promise<Api
   }
 };
 
-/**
- * 3. うおtubeの情報をユーザーの「uotube」枠（D列）に送信・更新する
- * @param userId ユーザーの固有ID (id_xxx...)
- * @param uotubeData うおtube側から保存したい文字列や情報
- */
 export const updateUotubeData = async (userId: string, uotubeData: string): Promise<ApiResponse> => {
   const params = new URLSearchParams();
   params.append('userId', userId);
@@ -88,4 +75,79 @@ export const updateUotubeData = async (userId: string, uotubeData: string): Prom
       message: error instanceof Error ? error.message : 'uotubeデータの更新中に通信エラーが発生しました。',
     };
   }
+};
+
+export function exportLocalStorageData(): BackupData {
+  const playlists = localStorage.getItem('playlists');
+  const subscribers = localStorage.getItem('subscribers');
+  const watchHistory = localStorage.getItem('watch-history');
+
+  return {
+    playlists: playlists ? JSON.parse(playlists) : [],
+    subscribers: subscribers ? JSON.parse(subscribers) : [],
+    'watch-history': watchHistory ? JSON.parse(watchHistory) : []
+  };
+}
+
+export function importLocalStorageData(data: BackupData): boolean {
+  try {
+    if (data.playlists && !Array.isArray(data.playlists)) {
+      throw new Error('Playlists data must be an array');
+    }
+    if (data.subscribers && !Array.isArray(data.subscribers)) {
+      throw new Error('Subscribers data must be an array');
+    }
+    if (data['watch-history'] && !Array.isArray(data['watch-history'])) {
+      throw new Error('Watch history data must be an array');
+    }
+
+    if (data.playlists) {
+      localStorage.setItem('playlists', JSON.stringify(data.playlists));
+    }
+    if (data.subscribers) {
+      localStorage.setItem('subscribers', JSON.stringify(data.subscribers));
+    }
+    if (data['watch-history']) {
+      localStorage.setItem('watch-history', JSON.stringify(data['watch-history']));
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Failed to import localStorage data:', error);
+    return false;
+  }
+}
+
+export const fetchUotubeData = async (username: string): Promise<{ success: boolean; uotube?: string; message?: string }> => {
+  try {
+    const response = await axios.get<{ success: boolean; uotube?: string; message?: string }>(GAS_API_URL, {
+      params: { action: 'get_uotube', username: username }
+    });
+    return response.data;
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'データの取得に失敗しました。'
+    };
+  }
+};
+
+export const syncLocalStorageToCloud = async (userId: string): Promise<ApiResponse> => {
+  const localData = exportLocalStorageData();
+  const jsonString = JSON.stringify(localData);
+  return await updateUotubeData(userId, jsonString);
+};
+
+export const syncCloudToLocalStorage = async (username: string): Promise<boolean> => {
+  const result = await fetchUotubeData(username);
+  if (result.success && result.uotube) {
+    try {
+      const backupData: BackupData = JSON.parse(result.uotube);
+      return importLocalStorageData(backupData);
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+  return false;
 };
