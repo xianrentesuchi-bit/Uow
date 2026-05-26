@@ -1,6 +1,7 @@
-<!-- components/layout/Download.vue -->
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+
+const props = defineProps<{
   open: boolean
   formats: any[]
 }>()
@@ -12,6 +13,24 @@ const emit = defineEmits<{
 function closeModal() {
   emit('close')
 }
+
+// MP4フォーマットのフィルタリング
+const mp4Formats = computed(() => {
+  if (!props.formats) return []
+  return props.formats.filter(format => {
+    const type = (format.mimeType || format.type || '').toLowerCase()
+    return type.includes('mp4')
+  })
+})
+
+// WebMフォーマットのフィルタリング
+const webmFormats = computed(() => {
+  if (!props.formats) return []
+  return props.formats.filter(format => {
+    const type = (format.mimeType || format.type || '').toLowerCase()
+    return type.includes('webm')
+  })
+})
 </script>
 
 <template>
@@ -20,18 +39,15 @@ function closeModal() {
       v-if="open"
       class="fixed inset-0 z-[9999] flex items-center justify-center"
     >
-      <!-- BACKDROP -->
       <div
         class="absolute inset-0 bg-black/60 backdrop-blur-sm"
         @click="closeModal"
       />
 
-      <!-- MODAL -->
       <div
-        class="relative w-full max-w-2xl mx-4 bg-white rounded-3xl overflow-hidden shadow-2xl"
+        class="relative w-full max-w-2xl mx-4 bg-white rounded-none overflow-hidden shadow-2xl"
       >
 
-        <!-- HEADER -->
         <div class="px-6 h-16 border-b border-zinc-200 flex items-center justify-between">
           <div class="text-lg font-bold">
             Download Formats
@@ -45,48 +61,72 @@ function closeModal() {
           </button>
         </div>
 
-        <!-- CONTENT -->
-        <div class="p-6 max-h-[70vh] overflow-y-auto">
+        <div class="p-6 max-h-[70vh] overflow-y-auto space-y-6">
 
-          <div
-            v-if="formats?.length"
-            class="space-y-3"
-          >
-
-            <a
-              v-for="format in formats"
-              :key="format.itag"
-              :href="format.url"
-              target="_blank"
-              class="flex items-center justify-between p-4 rounded-2xl border border-zinc-200 hover:bg-zinc-50 transition"
-            >
-
-              <div>
-                <div class="font-semibold">
-                  {{
-                    format.qualityLabel ||
-                    format.audioQuality ||
-                    'Unknown Quality'
-                  }}
-                </div>
-
-                <div class="text-sm text-zinc-500 mt-1">
-                  {{ format.mimeType || format.type }}
-                </div>
-              </div>
-
-              <div
-                class="bg-black text-white px-4 h-10 rounded-full flex items-center justify-center text-sm font-semibold"
+          <div v-if="mp4Formats.length">
+            <div class="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-3">
+              MP4 Formats
+            </div>
+            <div class="space-y-3">
+              <a
+                v-for="format in mp4Formats"
+                :key="format.itag"
+                :href="format.url"
+                target="_blank"
+                class="flex items-center justify-between p-4 rounded-none border border-zinc-200 hover:bg-zinc-50 transition"
               >
-                Download
-              </div>
+                <div>
+                  <div class="font-semibold">
+                    {{
+                      format.qualityLabel ||
+                      format.audioQuality ||
+                      'Unknown Quality'
+                    }}
+                  </div>
+                </div>
 
-            </a>
+                <div
+                  class="bg-black text-white px-4 h-10 rounded-none flex items-center justify-center text-sm font-semibold"
+                >
+                  Download
+                </div>
+              </a>
+            </div>
+          </div>
 
+          <div v-if="webmFormats.length">
+            <div class="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-3">
+              WebM Formats
+            </div>
+            <div class="space-y-3">
+              <a
+                v-for="format in webmFormats"
+                :key="format.itag"
+                :href="format.url"
+                target="_blank"
+                class="flex items-center justify-between p-4 rounded-none border border-zinc-200 hover:bg-zinc-50 transition"
+              >
+                <div>
+                  <div class="font-semibold">
+                    {{
+                      format.qualityLabel ||
+                      format.audioQuality ||
+                      'Unknown Quality'
+                    }}
+                  </div>
+                </div>
+
+                <div
+                  class="bg-black text-white px-4 h-10 rounded-none flex items-center justify-center text-sm font-semibold"
+                >
+                  Download
+                </div>
+              </a>
+            </div>
           </div>
 
           <div
-            v-else
+            v-if="!mp4Formats.length && !webmFormats.length"
             class="text-center text-zinc-500 py-16"
           >
             No downloadable formats found.
