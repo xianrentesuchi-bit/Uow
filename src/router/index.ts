@@ -10,6 +10,7 @@ import History from '../pages/History.vue'
 import Playlist from '../pages/Playlist.vue'
 import Html from '../pages/Html.vue'
 import Read from '../pages/Read.vue'
+import NotFound from '../pages/404.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -63,6 +64,11 @@ const router = createRouter({
     {
       path: '/read',
       component: Read,
+    },
+
+    {
+      path: '/:pathMatch(.*)*',
+      component: NotFound,
     },
   ],
 })
