@@ -121,7 +121,7 @@ function startVoiceSearch() {
         <span class="material-symbols-outlined text-[24px]">menu</span>
       </button>
         
-      <a href="/" class="flex items-center cursor-pointer pl-3" style="height: 20px;">
+      <a href="/" class="flex items-center cursor-pointer pl-3" style="height: 30px;">
         <img 
           :src="youtubeLogoBase64.trim().startsWith('data:') ? youtubeLogoBase64.trim() : 'data:image/jpeg;base64,' + youtubeLogoBase64.replace(/\s/g, '')" 
           alt="YouTube Logo" 
