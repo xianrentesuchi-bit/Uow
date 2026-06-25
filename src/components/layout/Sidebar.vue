@@ -44,7 +44,7 @@ const sidebarClass = computed(() => ({
 </script>    
     
 <style scoped>    
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');    
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0');    
     
 .sidebar {    
   position: fixed;    
@@ -136,7 +136,7 @@ const sidebarClass = computed(() => ({
 }    
     
 .sidebar-item.router-link-active .material-symbols-outlined {    
-  font-variation-settings: 'FILL' 1;    
+  font-variation-settings: 'FILL' 1 !important;    
 }    
     
 .material-symbols-outlined {    
