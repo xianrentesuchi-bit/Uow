@@ -8,7 +8,6 @@ const videos = ref<any[]>([])
 const loading = ref(true)
 const router = useRouter()
 
-// YouTube公式風のタグリスト
 const tags = [
   'すべて',
   'ゲーム',
@@ -25,11 +24,9 @@ const tags = [
 ]
 const activeTag = ref('すべて')
 
-// タグクリック時の検索処理
 const selectTag = (tag: string) => {
-  activeTag.ref = tag
+  activeTag.value = tag
   if (tag === 'すべて') {
-    // ページをリロードするか、初期データを再取得する動き
     return
   }
   router.push(`/results?search_query=${encodeURIComponent(tag)}`)
@@ -129,7 +126,6 @@ onMounted(async () => {
   background-color: #fff;
 }
 
-/* タグコンテナ（横スクロール可能） */
 .tags-container {
   position: sticky;
   top: 56px;
@@ -146,11 +142,11 @@ onMounted(async () => {
   gap: 12px;
   overflow-x: auto;
   white-space: nowrap;
-  scrollbar-width: none; /* Firefox用スクロールバー非表示 */
+  scrollbar-width: none;
 }
 
 .tags-inner::-webkit-scrollbar {
-  display: none; /* Chrome, Safari用スクロールバー非表示 */
+  display: none;
 }
 
 .tag-item {
@@ -175,7 +171,6 @@ onMounted(async () => {
   color: #fff;
 }
 
-/* スケルトングリッドレイアウト */
 .skeleton-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -237,7 +232,6 @@ onMounted(async () => {
   margin-top: 4px;
 }
 
-/* ふわっと光るアニメーションキーフレーム */
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
