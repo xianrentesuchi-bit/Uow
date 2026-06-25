@@ -12,7 +12,7 @@
       <button type="button" class="sidebar-item sidebar-button" @click="$emit('open-settings')">    
         <span class="material-symbols-outlined">settings</span>    
     
-        <span class="sidebar-label">    
+        <span v-if="!isCompact" class="sidebar-label">    
           設定    
         </span>    
       </button>    
@@ -95,7 +95,6 @@ const sidebarClass = computed(() => ({
   text-align: left;    
 }    
     
-/* 💡 縮小（コンパクト）時のアイテムスタイル調整 */    
 .is-compact .sidebar-item {    
   flex-direction: column;    
   justify-content: center;    
@@ -105,34 +104,37 @@ const sidebarClass = computed(() => ({
   border-radius: 10px;    
   gap: 6px;    
 }    
-
-.is-compact .sidebar-button {
-  width: calc(100% - 8px);
-  text-align: center;
-}
-
-.is-compact .material-symbols-outlined {
-  font-size: 24px;
-}
-
-/* 💡 縮小時のテキストサイズとラインハイト調整 */    
+    
+.is-compact .sidebar-button {    
+  width: calc(100% - 8px);    
+  text-align: center;    
+}    
+    
+.is-compact .material-symbols-outlined {    
+  font-size: 24px;    
+}    
+    
 .is-compact .sidebar-label {    
   font-size: 10px;    
   line-height: 14px;    
+  width: 100%;    
+  max-width: 64px;    
+  text-align: center;    
+  overflow: hidden;    
+  white-space: nowrap;    
+  text-overflow: ellipsis;    
 }    
     
 .sidebar-item:hover {    
   background: #f2f2f2;    
 }    
     
-/* 💡 選択時（アクティブ）のスタイル変更 */    
 .sidebar-item.router-link-active {    
   font-weight: 500;    
   color: #0f0f0f;    
   background: #f2f2f2;    
 }    
     
-/* 💡 選択時にマテリアルアイコンを塗りつぶす設定 */    
 .sidebar-item.router-link-active .material-symbols-outlined {    
   font-variation-settings: 'FILL' 1;    
 }    
