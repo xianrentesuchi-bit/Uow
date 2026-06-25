@@ -129,13 +129,16 @@ const sidebarClass = computed(() => ({
   background: #f2f2f2;    
 }    
     
-.sidebar-item.router-link-active {    
+.sidebar-item.router-link-active,
+.sidebar-item.is-active {    
   font-weight: 500;    
   color: #0f0f0f;    
   background: #f2f2f2;    
 }    
     
-.sidebar-item.router-link-active .material-symbols-outlined {    
+/* 選択時にアイコンを塗りつぶす設定 */
+.sidebar-item.router-link-active .material-symbols-outlined,
+.sidebar-item.is-active .material-symbols-outlined {    
   font-variation-settings: 'FILL' 1 !important;    
 }    
     
