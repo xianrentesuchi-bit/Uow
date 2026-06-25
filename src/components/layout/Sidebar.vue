@@ -4,7 +4,7 @@
       <router-link v-for="item in menuItems" :key="item.path" :to="item.path" class="sidebar-item">    
         <span class="material-symbols-outlined">{{ item.icon }}</span>    
     
-        <span v-if="!isCompact" class="sidebar-label">    
+        <span class="sidebar-label">    
           {{ item.label }}    
         </span>    
       </router-link>    
@@ -12,7 +12,7 @@
       <button type="button" class="sidebar-item sidebar-button" @click="$emit('open-settings')">    
         <span class="material-symbols-outlined">settings</span>    
     
-        <span v-if="!isCompact" class="sidebar-label">    
+        <span class="sidebar-label">    
           設定    
         </span>    
       </button>    
@@ -34,8 +34,7 @@ const menuItems = [
   { path: '/', label: 'ホーム', icon: 'home' },    
   { path: '/subscribers', label: '登録チャンネル', icon: 'subscriptions' },    
   { path: '/playlist', label: '再生リスト', icon: 'playlist_play' },    
-  { path: '/history', label: '履歴', icon: 'history' },    
-  { path: '/tools', label: 'ツール', icon: 'build' }    
+  { path: '/history', label: '履歴', icon: 'history' }    
 ];    
     
 const sidebarClass = computed(() => ({    
@@ -45,23 +44,23 @@ const sidebarClass = computed(() => ({
 </script>    
     
 <style scoped>    
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');    
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');    
     
 .sidebar {    
   position: fixed;    
   top: 56px;    
   left: 0;    
-  width: 250px;    
+  width: 240px;    
   height: calc(100vh - 56px);    
   background: #fff;    
-  border-right: 1px solid #e5e5e5;    
-  transition: width 0.3s ease;    
+  transition: width 0.15s ease-in-out;    
   overflow-y: auto;    
   z-index: 100;    
+  user-select: none;    
 }    
     
 .sidebar.is-compact {    
-  width: 70px;    
+  width: 72px;    
 }    
     
 .sidebar.is-hidden {    
@@ -77,39 +76,70 @@ const sidebarClass = computed(() => ({
 .sidebar-item {    
   display: flex;    
   align-items: center;    
-  padding: 12px 24px;    
+  height: 40px;    
+  margin: 0 12px 4px 12px;    
+  padding: 0 12px;    
+  border-radius: 10px;    
   text-decoration: none;    
   color: #0f0f0f;    
   gap: 24px;    
+  font-size: 14px;    
+  transition: background-color 0.1s ease;    
 }    
     
 .sidebar-button {    
   background: none;    
   border: none;    
   cursor: pointer;    
-  width: 100%;    
+  width: calc(100% - 24px);    
   text-align: left;    
 }    
     
+/* 💡 縮小（コンパクト）時のアイテムスタイル調整 */    
 .is-compact .sidebar-item {    
+  flex-direction: column;    
   justify-content: center;    
-  padding: 16px 0;    
+  height: 74px;    
+  margin: 0 4px 4px 4px;    
+  padding: 0;    
+  border-radius: 10px;    
+  gap: 6px;    
 }    
 
-.is-compact .material-symbols-outlined {
-  font-size: 1.5rem;
+.is-compact .sidebar-button {
+  width: calc(100% - 8px);
+  text-align: center;
 }
+
+.is-compact .material-symbols-outlined {
+  font-size: 24px;
+}
+
+/* 💡 縮小時のテキストサイズとラインハイト調整 */    
+.is-compact .sidebar-label {    
+  font-size: 10px;    
+  line-height: 14px;    
+}    
     
 .sidebar-item:hover {    
   background: #f2f2f2;    
 }    
     
+/* 💡 選択時（アクティブ）のスタイル変更 */    
 .sidebar-item.router-link-active {    
-  font-weight: bold;    
-  color: #cc0000;    
+  font-weight: 500;    
+  color: #0f0f0f;    
+  background: #f2f2f2;    
+}    
+    
+/* 💡 選択時にマテリアルアイコンを塗りつぶす設定 */    
+.sidebar-item.router-link-active .material-symbols-outlined {    
+  font-variation-settings: 'FILL' 1;    
 }    
     
 .material-symbols-outlined {    
   font-size: 24px;    
+  font-variation-settings: 'FILL' 0;    
+  transition: font-variation-settings 0.1s ease;    
 }    
 </style>
