@@ -2,7 +2,7 @@
   <aside class="sidebar" :class="sidebarClass">    
     <nav class="sidebar-nav">    
       <router-link v-for="item in menuItems" :key="item.path" :to="item.path" class="sidebar-item">    
-        <span class="material-symbols-outlined">{{ item.icon }}</span>    
+        <span class="material-symbols-rounded">{{ item.icon }}</span>    
     
         <span class="sidebar-label">    
           {{ item.label }}    
@@ -10,7 +10,7 @@
       </router-link>    
     
       <button type="button" class="sidebar-item sidebar-button" @click="$emit('open-settings')">    
-        <span class="material-symbols-outlined">settings</span>    
+        <span class="material-symbols-rounded">settings</span>    
     
         <span v-if="!isCompact" class="sidebar-label">    
           設定    
@@ -33,7 +33,7 @@ defineEmits(['open-settings']);
 const menuItems = [    
   { path: '/', label: 'ホーム', icon: 'home' },    
   { path: '/subscribers', label: '登録チャンネル', icon: 'subscriptions' },    
-  { path: '/playlist', label: '再生リスト', icon: 'playlist_play' },    
+  { path: '/playlist', label: 'playlist_play', icon: 'playlist_play' },    
   { path: '/history', label: '履歴', icon: 'history' }    
 ];    
     
@@ -44,7 +44,8 @@ const sidebarClass = computed(() => ({
 </script>    
     
 <style scoped>    
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0');    
+/* 💡 塗りつぶし（FILL）に対応した Material Symbols Rounded を読み込み */    
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');    
     
 .sidebar {    
   position: fixed;    
@@ -95,6 +96,7 @@ const sidebarClass = computed(() => ({
   text-align: left;    
 }    
     
+/* 💡 縮小（コンパクト）時のアイテムスタイル調整 */    
 .is-compact .sidebar-item {    
   flex-direction: column;    
   justify-content: center;    
@@ -110,10 +112,11 @@ const sidebarClass = computed(() => ({
   text-align: center;    
 }    
     
-.is-compact .material-symbols-outlined {    
+.is-compact .material-symbols-rounded {    
   font-size: 24px;    
 }    
     
+/* 💡 縮小時のテキストサイズとラインハイト調整（1行に収まらない場合は「...」にする） */    
 .is-compact .sidebar-label {    
   font-size: 10px;    
   line-height: 14px;    
@@ -129,20 +132,17 @@ const sidebarClass = computed(() => ({
   background: #f2f2f2;    
 }    
     
-.sidebar-item.router-link-active,
-.sidebar-item.is-active {    
+.sidebar-item.router-link-active {    
   font-weight: 500;    
   color: #0f0f0f;    
   background: #f2f2f2;    
 }    
-    
-/* 選択時にアイコンを塗りつぶす設定 */
-.sidebar-item.router-link-active .material-symbols-outlined,
-.sidebar-item.is-active .material-symbols-outlined {    
-  font-variation-settings: 'FILL' 1 !important;    
+     
+.sidebar-item.router-link-active .material-symbols-rounded {    
+  font-variation-settings: 'FILL' 1;    
 }    
     
-.material-symbols-outlined {    
+.material-symbols-rounded {    
   font-size: 24px;    
   font-variation-settings: 'FILL' 0;    
   transition: font-variation-settings 0.1s ease;    
