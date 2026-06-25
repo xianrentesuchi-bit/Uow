@@ -113,15 +113,15 @@ function startVoiceSearch() {
 <template>
   <header class="h-14 flex items-center justify-between px-4 fixed top-0 left-0 right-0 bg-white text-black z-50 select-none">
       
-    <div class="flex items-center gap-4">
+    <div class="flex items-center">
       <button
         @click="emit('toggle-sidebar')"
-        class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 active:bg-zinc-200 transition-colors"
+        class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 active:bg-zinc-200 transition-colors mr-1"
       >
         <span class="material-symbols-outlined text-[24px]">menu</span>
       </button>
         
-      <a href="/" class="flex items-center cursor-pointer" style="height: 40px;">
+      <a href="/" class="flex items-center cursor-pointer pl-3" style="height: 20px;">
         <img 
           :src="youtubeLogoBase64.trim().startsWith('data:') ? youtubeLogoBase64.trim() : 'data:image/jpeg;base64,' + youtubeLogoBase64.replace(/\s/g, '')" 
           alt="YouTube Logo" 
@@ -130,19 +130,19 @@ function startVoiceSearch() {
       </a>
     </div>
 
-    <div class="flex flex-1 max-w-[732px] items-center gap-4 mx-4">
+    <div class="flex flex-1 max-w-[732px] items-center justify-center mx-4">
       <div class="flex flex-1 items-center">
-        <div class="flex flex-1 bg-white border border-zinc-300 rounded-l-full px-4 h-10 items-center focus-within:border-blue-500 focus-within:shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
+        <div class="flex flex-1 bg-white border border-[#ccc] rounded-l-full pl-4 pr-1 h-10 items-center focus-within:border-[#1c62b9] focus-within:shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)] focus-within:ml-[-1px] focus-within:pl-[17px]">
           <input
             v-model="query"
-            class="w-full bg-transparent outline-none text-base text-black placeholder-zinc-400"
+            class="w-full bg-transparent outline-none text-base text-black placeholder-zinc-400 font-normal"
             placeholder="検索"
             @keyup.enter="search"
           />
           <button 
             v-if="query" 
             @click="query = ''" 
-            class="text-zinc-500 hover:text-black mr-1"
+            class="w-9 h-9 flex items-center justify-center text-zinc-600 hover:text-black rounded-full hover:bg-zinc-100"
           >
             <span class="material-symbols-outlined text-[20px]">close</span>
           </button>
@@ -150,23 +150,23 @@ function startVoiceSearch() {
 
         <button
           @click="search"
-          class="w-[64px] h-10 bg-zinc-50 border border-l-0 border-zinc-300 rounded-r-full flex items-center justify-center hover:bg-zinc-100 transition-colors"
+          class="w-[64px] h-10 bg-[#f8f8f8] border border-l-0 border-[#ccc] rounded-r-full flex items-center justify-center hover:bg-[#f0f0f0] hover:shadow-[0_1px_1px_rgba(0,0,0,0.05)] hover:border-[#c6c6c6] transition-colors"
           title="検索"
         >
-          <span class="material-symbols-outlined text-[22px] text-zinc-700">search</span>
+          <span class="material-symbols-outlined text-[22px] text-zinc-800">search</span>
         </button>
       </div>
 
       <button
         @click="startVoiceSearch"
-        class="w-10 h-10 bg-zinc-50 hover:bg-zinc-100 active:bg-zinc-200 rounded-full flex items-center justify-center transition-colors"
+        class="w-10 h-10 bg-[#f8f8f8] hover:bg-[#e5e5e5] active:bg-zinc-200 rounded-full flex items-center justify-center transition-colors ml-3 flex-shrink-0"
         title="音声で検索"
       >
-        <span class="material-symbols-outlined text-[24px]">mic</span>
+        <span class="material-symbols-outlined text-[24px] text-zinc-800">mic</span>
       </button>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 pr-2">
       <div ref="notificationRef" class="relative flex items-center">
         <button 
           class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 relative transition-colors" 
@@ -176,7 +176,7 @@ function startVoiceSearch() {
           <span class="material-symbols-outlined text-[24px]">notifications</span>
           <span 
             v-if="unreadCount() > 0" 
-            class="absolute top-1 right-1 bg-red-600 text-[10px] font-medium text-white px-1 rounded-full min-w-[16px] text-center"
+            class="absolute top-1.5 right-1.5 bg-red-600 text-[10px] font-medium text-white px-1 rounded-full min-w-[16px] h-4 flex items-center justify-center border border-white"
           >
             {{ unreadCount() > 9 ? '9+' : unreadCount() }}
           </span>
@@ -184,7 +184,7 @@ function startVoiceSearch() {
 
         <div 
           v-if="showNotifications"
-          class="absolute top-14 right-0 w-80 bg-white border border-zinc-200 shadow-lg rounded-xl overflow-hidden z-50"
+          class="absolute top-12 right-0 w-80 bg-white border border-zinc-200 shadow-lg rounded-xl overflow-hidden z-50"
         >
           <div class="p-4 border-b border-zinc-100 font-bold">通知</div>
           <div class="max-h-[400px] overflow-y-auto">
