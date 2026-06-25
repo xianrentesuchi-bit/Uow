@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import Layout from '../components/layout/Layout.vue'
 import VideoGrid from '../components/video/VideoGrid.vue'
+import { searchVideos } from '../api/invidious'
 
 const videos = ref<any[]>([])
 const loading = ref(true)
-const router = useRouter()
 
 const tags = [
   'すべて',
@@ -24,57 +24,59 @@ const tags = [
 ]
 const activeTag = ref('すべて')
 
-const selectTag = (tag: string) => {
+const fetchTrendingVideos = async () => {
+  const response = await fetch(
+    'https://raw.githubusercontent.com/ajgpw/youtubedata/refs/heads/main/trend-base64.json'
+  )
+  const data = await response.json()
+  return data.trending.map((video: any) => ({
+    videoId: video.id,
+    title: video.title,
+    author: video.channel,
+    authorId: video.channelId,
+    viewCount: video.viewCount,
+    likeCount: video.likeCount,
+    commentCount: video.commentCount,
+    published: video.publishedAt,
+    lengthSeconds: video.duration,
+    videoThumbnails: [
+      {
+        url: video.thumbnails.standard.url,
+        width: video.thumbnails.standard.width,
+        height: video.thumbnails.standard.height,
+      },
+    ],
+    authorThumbnails: [
+      {
+        url: video.channelIcon,
+        width: 68,
+        height: 68,
+      },
+    ],
+  }))
+}
+
+const selectTag = async (tag: string) => {
   activeTag.value = tag
-  if (tag === 'すべて') {
-    return
+  loading.value = true
+  try {
+    if (tag === 'すべて') {
+      videos.value = await fetchTrendingVideos()
+    } else {
+      videos.value = await searchVideos(tag)
+    }
+  } catch (error) {
+    console.error('データの取得に失敗しました:', error)
+  } finally {
+    loading.value = false
   }
-  router.push(`/results?search_query=${encodeURIComponent(tag)}`)
 }
 
 onMounted(async () => {
   try {
-    const response = await fetch(
-      'https://raw.githubusercontent.com/ajgpw/youtubedata/refs/heads/main/trend-base64.json'
-    )
-
-    const data = await response.json()
-
-    videos.value = data.trending.map((video: any) => ({
-      videoId: video.id,
-
-      title: video.title,
-
-      author: video.channel,
-
-      authorId: video.channelId,
-
-      viewCount: video.viewCount,
-
-      likeCount: video.likeCount,
-
-      commentCount: video.commentCount,
-
-      published: video.publishedAt,
-
-      lengthSeconds: video.duration,
-
-      videoThumbnails: [
-        {
-          url: video.thumbnails.standard.url,
-          width: video.thumbnails.standard.width,
-          height: video.thumbnails.standard.height,
-        },
-      ],
-
-      authorThumbnails: [
-        {
-          url: video.channelIcon,
-          width: 68,
-          height: 68,
-        },
-      ],
-    }))
+    videos.value = await fetchTrendingVideos()
+  } catch (error) {
+    console.error('初期データの取得に失敗しました:', error)
   } finally {
     loading.value = false
   }
@@ -137,16 +139,40 @@ onMounted(async () => {
   overflow: hidden;
 }
 
+.tags-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 100%;
+  background: linear-gradient(to left, #fff 20%, rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
 .tags-inner {
   display: flex;
   gap: 12px;
   overflow-x: auto;
   white-space: nowrap;
-  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tags-inner::-webkit-scrollbar {
-  display: none;
+  height: 5px;
+}
+
+.tags-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tags-inner::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.tags-inner:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .tag-item {
@@ -160,6 +186,7 @@ onMounted(async () => {
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.1s ease;
+  flex-shrink: 0;
 }
 
 .tag-item:hover {
